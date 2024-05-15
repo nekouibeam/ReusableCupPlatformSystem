@@ -3,7 +3,10 @@
 主程式執行後會出現SelectFrame，當中有3個Button
 按下相對應的Button便會打開相對應的Frame，並將原本的SelectFrame關閉
 
+依照不同的部分我各自開了Package
+請大家將各自的部分在相對應的Package內撰寫
+
 我還沒設計連結資料庫的method (databaseConnection)
 所以大家先開始設計GUI介面就好
 連結資料庫的method部分待我寫完再向大家說明
-感謝~
+有問題隨時問，感謝~
