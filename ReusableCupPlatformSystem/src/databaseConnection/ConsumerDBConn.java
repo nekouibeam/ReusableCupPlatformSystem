@@ -8,39 +8,24 @@ public class ConsumerDBConn extends SignupAndLoginExceptions implements DBconnec
 	private ResultSet rs;
 	private String query;
 	private String comsumerID;
-
+//Constructor
 	public ConsumerDBConn() throws SQLException {
 		conn = DriverManager.getConnection(url, username, password);
 		stat = conn.createStatement();
 	}
 
-	public void setID(String ID) {
-		this.comsumerID = ID;
-	}
-
-	public void consumerSignUp(String ID, String name, String password) throws SQLException {
+//Methods for operation
+	public void consumerSignUp(String ID, String name, String password)
+			throws SQLException, IdAlreadyUsedException, PasswordAlreadyUsedException{
+		singUpIDCheck(ID);
+		newPasswordCheck(password);
 		query = String.format("INSERT INTO `Consumer_Accounts` (ID, Name, Password) VALUES ('%s', '%s', '%s');", ID,
 				name, password);
 		stat.execute(query);
 	}
 
-	public void singUpIDCheck(String ID) throws SQLException, IdAlreadyUsedException{
-		query = String.format("SELECT `ID` FROM `Consumer_Accounts` WHERE `ID` = '%s';", ID);
-		rs = stat.executeQuery(query);
-		if (rs.next()) {
-			throw new IdAlreadyUsedException();
-		}
-	}
-
-	public void signUpPasswordCheck(String password) throws SQLException, PasswordAlreadyUsedException{
-		query = String.format("SELECT `Password` FROM `Consumer_Accounts` WHERE `Password` = '%s';", password);
-		rs = stat.executeQuery(query);
-		if (rs.next()) {
-			throw new PasswordAlreadyUsedException();
-		}
-	}
-
-	public void loginCheck(String ID, String password) throws SQLException, PasswordWrongException{
+	public void login(String ID, String password) throws SQLException, PasswordWrongException, AccountNotExistException {
+		accountExistCheck(ID);
 		query = String.format(
 				"SELECT `ID`, `Password` FROM `Consumer_Accounts` WHERE `ID` = '%s' AND `Password` = '%s';", ID,
 				password);
@@ -48,25 +33,7 @@ public class ConsumerDBConn extends SignupAndLoginExceptions implements DBconnec
 		if (!rs.next()) {
 			throw new PasswordWrongException();
 		}
-	}
-	
-	public void accountExistCheck(String ID) throws SQLException, AccountNotExistException{
-		query = String.format(
-				"SELECT `ID` FROM `Consumer_Accounts` WHERE `ID` = '%s';", ID);
-		rs = stat.executeQuery(query);
-		if (!rs.next()) {
-			throw new AccountNotExistException();
-		}
-	}
-
-	public void changePassword(String ID, String newPassword) throws SQLException {
-		query = String.format("UPDATE `Consumer_Accounts` SET `Password` = '%s' WHERE ID = %s;", newPassword, ID);
-		stat.execute(query);
-	}
-
-	public void changeName(String ID, String newName) throws SQLException {
-		query = String.format("UPDATE `Consumer_Accounts` SET `Name` = '%s' WHERE ID = %s;", newName, ID);
-		stat.execute(query);
+		this.setID(ID);
 	}
 
 	public String queryCupsHolding() throws SQLException {
@@ -98,4 +65,46 @@ public class ConsumerDBConn extends SignupAndLoginExceptions implements DBconnec
 		return list;
 
 	}
+
+	public void changePassword(String ID, String newPassword) throws SQLException, PasswordAlreadyUsedException {
+		this.newPasswordCheck(newPassword);
+		query = String.format("UPDATE `Consumer_Accounts` SET `Password` = '%s' WHERE ID = %s;", newPassword, ID);
+		stat.execute(query);
+	}
+
+	public void changeName(String ID, String newName) throws SQLException {
+		query = String.format("UPDATE `Consumer_Accounts` SET `Name` = '%s' WHERE ID = %s;", newName, ID);
+		stat.execute(query);
+	}
+
+//Setter and Methods for checking
+	public void setID(String ID) {
+		this.comsumerID = ID;
+	}
+
+	public void singUpIDCheck(String ID) throws SQLException, IdAlreadyUsedException {
+		query = String.format("SELECT `ID` FROM `Consumer_Accounts` WHERE `ID` = '%s';", ID);
+		rs = stat.executeQuery(query);
+		if (rs.next()) {
+			throw new IdAlreadyUsedException();
+		}
+	}
+
+	public void newPasswordCheck(String password) throws SQLException, PasswordAlreadyUsedException {
+		query = String.format("SELECT `Password` FROM `Consumer_Accounts` WHERE `Password` = '%s';", password);
+		rs = stat.executeQuery(query);
+		if (rs.next()) {
+			throw new PasswordAlreadyUsedException();
+		}
+	}
+
+	public void accountExistCheck(String ID) throws SQLException, AccountNotExistException {
+		query = String.format("SELECT `ID` FROM `Consumer_Accounts` WHERE `ID` = '%s';", ID);
+		rs = stat.executeQuery(query);
+		if (!rs.next()) {
+			throw new AccountNotExistException();
+		}
+	}
+
+
 }

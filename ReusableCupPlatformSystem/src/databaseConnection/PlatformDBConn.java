@@ -3,11 +3,12 @@ package databaseConnection;
 import java.sql.*;
 
 public class PlatformDBConn extends DatabaseUpdate {
-
+//Constructor
 	public PlatformDBConn() throws SQLException {
 		super();
 	}
-
+	
+//Methods for operation
 	public void addCup(String type, String size) throws SQLException {
 		query = String.format(
 				"INSERT INTO `Cups` (type, size, holder, holderID, status) VALUES ('%s', '%s', DEFAULT, DEFAULT, DEFAULT);",
@@ -15,21 +16,12 @@ public class PlatformDBConn extends DatabaseUpdate {
 		stat.execute(query);
 	}
 
-	public void storeSignUp(String ID, String name) throws SQLException {
-		query = String.format("INSERT INTO `Shop_Accounts` (ID, Name) VALUES ('%s', '%s');", ID, name);
+	public void shopSignUp(String ID, String name, String activatePassword)
+			throws SQLException, IdAlreadyUsedException {
+		signUpIDCheck(ID);
+		query = String.format("INSERT INTO `Shop_Accounts` (ID, Name, Password) VALUES ('%s', '%s', '%s');", ID, name,
+				activatePassword);
 		stat.execute(query);
-
-	}
-
-	public void signUpIDCheck(String ID) throws SQLException, IdAlreadyUsedException {
-		query = String.format("SELECT `ID` FROM `Shop_Accounts` WHERE `ID` = '%s';", ID);
-		rs = stat.executeQuery(query);
-		if (rs.next()) {
-			throw new IdAlreadyUsedException();
-		}
-	}
-	
-	public void lendCup(int number, String type, String size, int shopID) throws SQLException {
 
 	}
 
@@ -78,5 +70,14 @@ public class PlatformDBConn extends DatabaseUpdate {
 			list += row;
 		}
 		return list;
+	}
+
+//Methods for checking
+	public void signUpIDCheck(String ID) throws SQLException, IdAlreadyUsedException {
+		query = String.format("SELECT `ID` FROM `Shop_Accounts` WHERE `ID` = '%s';", ID);
+		rs = stat.executeQuery(query);
+		if (rs.next()) {
+			throw new IdAlreadyUsedException();
+		}
 	}
 }

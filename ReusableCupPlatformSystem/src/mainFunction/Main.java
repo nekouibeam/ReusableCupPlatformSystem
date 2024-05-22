@@ -23,7 +23,7 @@ public class Main {
 			consumerProgram.ConsumerMain cm = new consumerProgram.ConsumerMain();
 			break;
 		case 2:
-			storeProgram.StoreMain sm = new storeProgram.StoreMain();
+			shopProgram.ShopMain sm = new shopProgram.ShopMain();
 			break;
 		case 3:
 			platformManagementProgram.PlatformManagementMain pmm = new platformManagementProgram.PlatformManagementMain();

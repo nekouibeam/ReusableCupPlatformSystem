@@ -26,4 +26,9 @@ public class SignupAndLoginExceptions {
 		}
 	}
 
+	public class NotActivateException extends Exception {
+		public NotActivateException() {
+			super("NotActivateException");
+		}
+	}
 }
