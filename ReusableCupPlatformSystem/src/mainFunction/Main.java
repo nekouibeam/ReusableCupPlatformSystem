@@ -1,7 +1,6 @@
 package mainFunction;
 
 import javax.swing.*;
-import databaseConnection.*;
 
 public class Main {
 
@@ -11,8 +10,8 @@ public class Main {
 		frame = new SelectFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
-		DBC_Test t = new DBC_Test();
-		t.test();
+		//DBC_Test t = new DBC_Test();
+		//t.test();
 		
 	}
 

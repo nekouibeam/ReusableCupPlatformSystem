@@ -13,7 +13,7 @@ public class SelectFrame extends JFrame {
 	public SelectFrame() {
 		super("System Select Page");
 		consumerButton = new JButton("Consumer");
-		storeButton = new JButton("Store");
+		storeButton = new JButton("Shop");
 		platformButton = new JButton("Platform management");
 		setSize(frame_width, frame_height);
 		setLayout(new GridLayout(3, 1));

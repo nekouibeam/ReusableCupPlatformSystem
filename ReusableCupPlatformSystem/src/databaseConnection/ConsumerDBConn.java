@@ -44,11 +44,7 @@ public class ConsumerDBConn extends SignupAndLoginExceptions implements DBconnec
 		ResultSetMetaData metadata = rs.getMetaData();
 		int columnCount = metadata.getColumnCount();
 		for (int i = 1; i <= columnCount; i++) {
-			if (i == 1) {
 				list += String.format("%-10s", metadata.getColumnName(i));
-			} else {
-				list += String.format("|%-10s", metadata.getColumnName(i));
-			}
 		}
 		while (rs.next()) {
 			list += String.format("\n%s\n", "-".repeat(70));
@@ -57,7 +53,7 @@ public class ConsumerDBConn extends SignupAndLoginExceptions implements DBconnec
 				if (i == 1) {
 					row += String.format("%-10d", rs.getInt(i));
 				} else {
-					row += String.format("|%-10s", rs.getString(i));
+					row += String.format("%-10s", rs.getString(i));
 				}
 			}
 			list += row;

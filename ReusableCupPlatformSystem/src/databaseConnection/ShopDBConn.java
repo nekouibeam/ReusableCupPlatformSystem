@@ -5,10 +5,12 @@ import java.sql.*;
 public class ShopDBConn extends DatabaseUpdate {
 
 	private String shopID;
+
 //Constructor
 	public ShopDBConn() throws SQLException {
 		super();
 	}
+
 //Methods for operation
 	public void activateAccount(String ID, String activatePassword, String newPassword)
 			throws SQLException, AccountNotExistException, PasswordAlreadyUsedException, PasswordWrongException {
@@ -21,7 +23,6 @@ public class ShopDBConn extends DatabaseUpdate {
 		}
 		changePassword(ID, newPassword);
 		setActivate(ID);
-		setID(ID);
 	}
 
 	public void login(String ID, String password)
@@ -34,6 +35,7 @@ public class ShopDBConn extends DatabaseUpdate {
 		if (!rs.next()) {
 			throw new PasswordWrongException();
 		}
+		setID(ID);
 	}
 
 	public void changePassword(String ID, String newPassword) throws SQLException, PasswordAlreadyUsedException {
@@ -48,7 +50,7 @@ public class ShopDBConn extends DatabaseUpdate {
 	}
 
 	public void lendCup(int cupID, String ID) throws SQLException {
-		query = String.format("UPDATE `Cups` SET holder = 'Consumer', holderID = '%s', status = 'Yes' WHERE ID = %d;",
+		query = String.format("UPDATE `Cups` SET holder = 'Consumer', holderID = '%s', status = 'Used' WHERE ID = %d;",
 				ID, cupID);
 		stat.execute(query);
 		updateTransactionRecord(cupID, "Store", shopID, "Comsumer", ID);
@@ -74,11 +76,7 @@ public class ShopDBConn extends DatabaseUpdate {
 		ResultSetMetaData metadata = rs.getMetaData();
 		int columnCount = metadata.getColumnCount();
 		for (int i = 1; i <= columnCount; i++) {
-			if (i == 1) {
-				list += String.format("%-10s", metadata.getColumnName(i));
-			} else {
-				list += String.format("|%-10s", metadata.getColumnName(i));
-			}
+			list += String.format("%-10s", metadata.getColumnName(i));
 		}
 		while (rs.next()) {
 			list += String.format("\n%s\n", "-".repeat(70));
@@ -87,7 +85,7 @@ public class ShopDBConn extends DatabaseUpdate {
 				if (i == 1) {
 					row += String.format("%-10d", rs.getInt(i));
 				} else {
-					row += String.format("|%-10s", rs.getString(i));
+					row += String.format("%-10s", rs.getString(i));
 				}
 			}
 			list += row;
@@ -102,6 +100,7 @@ public class ShopDBConn extends DatabaseUpdate {
 
 	public void setActivate(String ID) throws SQLException {
 		query = String.format("UPDATE `Shop_Accounts` SET `Activate` = '1' WHERE ID = '%s';", ID);
+		stat.execute(query);
 	}
 
 	public void checkActivate(String ID) throws SQLException, NotActivateException {
@@ -122,6 +121,14 @@ public class ShopDBConn extends DatabaseUpdate {
 
 	public void accountExistCheck(String ID) throws SQLException, AccountNotExistException {
 		query = String.format("SELECT `ID` FROM `Shop_Accounts` WHERE `ID` = '%s';", ID);
+		rs = stat.executeQuery(query);
+		if (!rs.next()) {
+			throw new AccountNotExistException();
+		}
+	}
+	
+	public void consumerExistCheck(String ID) throws SQLException, AccountNotExistException {
+		query = String.format("SELECT `ID` FROM `Consumer_Accounts` WHERE `ID` = '%s';", ID);
 		rs = stat.executeQuery(query);
 		if (!rs.next()) {
 			throw new AccountNotExistException();

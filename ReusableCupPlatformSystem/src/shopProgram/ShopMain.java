@@ -5,7 +5,7 @@ import javax.swing.JFrame;
 public class ShopMain {
 	
 	public ShopMain() {
-		ShopFrame sFrame = new ShopFrame();
+		ShopOperationsFrame sFrame = new ShopOperationsFrame();
 		sFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		sFrame.setVisible(true);
 	} 

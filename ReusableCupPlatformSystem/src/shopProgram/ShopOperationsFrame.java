@@ -1,70 +1,69 @@
-package consumerProgram;
+package shopProgram;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;
-import databaseConnection.ConsumerDBConn;
+import databaseConnection.ShopDBConn;
 import databaseConnection.SignupAndLoginExceptions.*;
 
-public class ConsumerFrame extends JFrame {
-    private ConsumerDBConn dbcConn;
+public class ShopOperationsFrame extends JFrame {
+    private ShopDBConn shopConn;
 
     // GUI Components
     private JTextField idField;
-    private JTextField nameField;
-    private JPasswordField passwordField;
+    private JTextField activatePasswordField;
+    private JTextField passwordField;
 
-    public ConsumerFrame() {
-        super("Consumer Login/Sign Up");
+    public ShopOperationsFrame() {
+        super("shop Activate/Login");
 
-        // Initialize database connection
         try {
-            dbcConn = new ConsumerDBConn();
+        	shopConn = new ShopDBConn();
         } catch (SQLException e) {
             showError("Database Connection Error", e.getMessage());
             return;
         }
 
-        // Create GUI components
         idField = new JTextField(15);
-        nameField = new JTextField(15);
+        activatePasswordField = new JTextField(15);
         passwordField = new JPasswordField(15);
-
+        
+        JButton ActivateButton = new JButton("Activate");
         JButton loginButton = new JButton("Login");
-        JButton signUpButton = new JButton("Sign Up");
+        
 
         // Set up the layout
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new GridLayout(3, 2));
         inputPanel.add(new JLabel("ID:"));
         inputPanel.add(idField);
-        inputPanel.add(new JLabel("Name:"));
-        inputPanel.add(nameField);
+        inputPanel.add(new JLabel("Initial Password:"));
+        inputPanel.add(activatePasswordField);
         inputPanel.add(new JLabel("Password:"));
         inputPanel.add(passwordField);
 
         JPanel buttonPanel = new JPanel();
+        buttonPanel.add(ActivateButton);
         buttonPanel.add(loginButton);
-        buttonPanel.add(signUpButton);
-
+        
         Container container = getContentPane();
         container.setLayout(new BorderLayout());
         container.add(inputPanel, BorderLayout.CENTER);
         container.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Add action listeners
-        loginButton.addActionListener(new ActionListener() {
-            @Override
+        
+        ActivateButton.addActionListener(new ActionListener() {
+            
             public void actionPerformed(ActionEvent e) {
-                handleLogin();
+            	handleActivate();            
             }
         });
 
-        signUpButton.addActionListener(new ActionListener() {
-            @Override
+        loginButton.addActionListener(new ActionListener() {
+           
             public void actionPerformed(ActionEvent e) {
-                handleSignUp();
+            	handleLogin();
             }
         });
 
@@ -76,43 +75,48 @@ public class ConsumerFrame extends JFrame {
 
     private void handleLogin() {
         String id = idField.getText();
-        String password = new String(passwordField.getPassword());
+        String password = passwordField.getText();
 
         try {
-            dbcConn.login(id, password);
+            shopConn.login(id, password);
             showMessage("Success", "Login Successful");
-            openConsumerOperationsFrame();
+            openShopFrame();
         } catch (PasswordWrongException e) {
             showError("Login Error", "Wrong password");
         } catch (AccountNotExistException e) {
             showError("Login Error", "Account does not exist");
         } catch (SQLException e) {
             showError("Login Error", e.getMessage());
+        }catch (NotActivateException e) {
+            showError("Login Error", "Not Activate");
         }
     }
 
-    private void handleSignUp() {
+    private void handleActivate() {
         String id = idField.getText();
-        String name = nameField.getText();
-        String password = new String(passwordField.getPassword());
+        String activatePassword = activatePasswordField.getText();
+        String password = passwordField.getText();
 
         try {
-            dbcConn.consumerSignUp(id, name, password);
+        	shopConn.activateAccount(id, activatePassword, password);
             showMessage("Success", "Sign Up Successful");
-        } catch (IdAlreadyUsedException e) {
-            showError("Sign Up Error", "ID already in use");
+        } catch (AccountNotExistException e) {
+            showError("Sign Up Error", "Account does not exist");
         } catch (PasswordAlreadyUsedException e) {
             showError("Sign Up Error", "Password already in use");
         } catch (SQLException e) {
             showError("Sign Up Error", e.getMessage());
+        }catch (PasswordWrongException e) {
+            showError("Sign Up Error", "Wrong password");
         }
+        
     }
 
-    private void openConsumerOperationsFrame() {
-        ConsumerOperationsFrame operationsFrame = new ConsumerOperationsFrame(dbcConn);
-        operationsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        operationsFrame.setVisible(true);
-        this.dispose(); // Close the login/signup window
+    private void openShopFrame() {
+    	ShopFrame shFrame = new ShopFrame(shopConn);
+    	shFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    	shFrame.setVisible(true);
+        this.dispose(); 
     }
 
     private void showMessage(String title, String message) {
