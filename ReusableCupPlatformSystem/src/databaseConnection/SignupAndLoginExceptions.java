@@ -31,4 +31,25 @@ public class SignupAndLoginExceptions {
 			super("NotActivateException");
 		}
 	}
+	
+	//ID不能為空
+	public class IdCantEmptyException extends Exception {
+		public IdCantEmptyException() {
+			super("IdCantEmptyException");
+		}
+	}
+	
+	//激活密碼不能為空
+	public class InitialPasswardCantEmptyException extends Exception {
+		public InitialPasswardCantEmptyException() {
+			super("InitialPasswardCantEmptyException");
+		}
+	}
+	
+	//登錄密碼不能為空
+	public class PasswardCantEmptyException extends Exception {
+		public PasswardCantEmptyException() {
+			super("PasswardCantEmptyException");
+		}
+	}
 }

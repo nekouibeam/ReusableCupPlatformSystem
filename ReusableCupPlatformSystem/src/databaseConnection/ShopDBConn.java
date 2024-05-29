@@ -6,14 +6,19 @@ public class ShopDBConn extends DatabaseUpdate {
 
 	private String shopID;
 
-//Constructor
 	public ShopDBConn() throws SQLException {
 		super();
 	}
 
-//Methods for operation
 	public void activateAccount(String ID, String activatePassword, String newPassword)
-			throws SQLException, AccountNotExistException, PasswordAlreadyUsedException, PasswordWrongException {
+			throws SQLException, AccountNotExistException, PasswordAlreadyUsedException, PasswordWrongException, IdCantEmptyException, InitialPasswardCantEmptyException, PasswardCantEmptyException {
+		if (ID == null || ID.trim().isEmpty()) {
+            throw new IdCantEmptyException();
+        } else if (activatePassword == null || activatePassword.trim().isEmpty()) {
+            throw new InitialPasswardCantEmptyException();
+        } else if (newPassword == null || newPassword.trim().isEmpty()) {
+            throw new PasswardCantEmptyException();
+        }
 		accountExistCheck(ID);
 		query = String.format("SELECT `ID`, `Password` FROM `Shop_Accounts` WHERE `ID` = '%s' AND `Password` = '%s';",
 				ID, activatePassword);
@@ -26,7 +31,12 @@ public class ShopDBConn extends DatabaseUpdate {
 	}
 
 	public void login(String ID, String password)
-			throws SQLException, PasswordWrongException, NotActivateException, AccountNotExistException {
+			throws SQLException, PasswordWrongException, NotActivateException, AccountNotExistException, IdCantEmptyException, PasswardCantEmptyException{
+		if (ID == null || ID.trim().isEmpty()) {
+            throw new IdCantEmptyException();
+        } else if (password == null || password.trim().isEmpty()) {
+            throw new PasswardCantEmptyException();
+        }
 		accountExistCheck(ID);
 		checkActivate(ID);
 		query = String.format("SELECT `ID`, `Password` FROM `Shop_Accounts` WHERE `ID` = '%s' AND `Password` = '%s';",
@@ -49,8 +59,9 @@ public class ShopDBConn extends DatabaseUpdate {
 		stat.execute(query);
 	}
 
-	public void lendCup(int cupID, String ID) throws SQLException {
-		query = String.format("UPDATE `Cups` SET holder = 'Consumer', holderID = '%s', status = 'Used' WHERE ID = %d;",
+	public void lendCup(int cupID, String ID) throws SQLException, AccountNotExistException{
+		consumerExistCheck(ID);
+		query = String.format("UPDATE `Cups` SET holder = 'Consumer', holderID = '%s', status = 'Yes' WHERE ID = %d;",
 				ID, cupID);
 		stat.execute(query);
 		updateTransactionRecord(cupID, "Store", shopID, "Comsumer", ID);
@@ -76,7 +87,7 @@ public class ShopDBConn extends DatabaseUpdate {
 		ResultSetMetaData metadata = rs.getMetaData();
 		int columnCount = metadata.getColumnCount();
 		for (int i = 1; i <= columnCount; i++) {
-			list += String.format("%-10s", metadata.getColumnName(i));
+				list += String.format("%-10s", metadata.getColumnName(i));			
 		}
 		while (rs.next()) {
 			list += String.format("\n%s\n", "-".repeat(70));
@@ -100,7 +111,6 @@ public class ShopDBConn extends DatabaseUpdate {
 
 	public void setActivate(String ID) throws SQLException {
 		query = String.format("UPDATE `Shop_Accounts` SET `Activate` = '1' WHERE ID = '%s';", ID);
-		stat.execute(query);
 	}
 
 	public void checkActivate(String ID) throws SQLException, NotActivateException {

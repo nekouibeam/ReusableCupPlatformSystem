@@ -8,7 +8,7 @@ public abstract class DatabaseUpdate extends SignupAndLoginExceptions implements
 	protected ResultSet rs;
 	protected String query;
 
-	abstract public void lendCup(int cupID, String ID) throws SQLException;
+	abstract public void lendCup(int cupID, String ID) throws SQLException, AccountNotExistException;
 
 	abstract public void receiveCup(int cupID) throws SQLException;
 
