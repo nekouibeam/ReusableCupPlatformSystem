@@ -6,10 +6,19 @@ import java.awt.event.*;
 import java.sql.SQLException;
 import databaseConnection.ConsumerDBConn;
 
+/**
+ * ConsumerOperationsFrame class represents the GUI frame for consumer operations.
+ * It allows consumers to query the cups they are holding.
+ */
 public class ConsumerOperationsFrame extends JFrame {
     private ConsumerDBConn dbcConn;
     private JTextArea outputArea;
 
+    /**
+     * Constructs a ConsumerOperationsFrame with the specified database connection.
+     *
+     * @param dbcConn the database connection for consumer operations
+     */
     public ConsumerOperationsFrame(ConsumerDBConn dbcConn) {
         super("Consumer Operations");
         this.dbcConn = dbcConn;
@@ -45,6 +54,10 @@ public class ConsumerOperationsFrame extends JFrame {
         setLocationRelativeTo(null); // Center on screen
     }
 
+    /**
+     * Handles the action of querying cups held by the consumer.
+     * Retrieves the information from the database and displays it in the output area.
+     */
     private void handleQueryCups() {
         try {
             String result = dbcConn.queryCupsHolding();
@@ -54,8 +67,13 @@ public class ConsumerOperationsFrame extends JFrame {
         }
     }
 
+    /**
+     * Displays an error message dialog.
+     *
+     * @param title   the title of the error dialog
+     * @param message the error message to display
+     */
     private void showError(String title, String message) {
         JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
     }
 }
-
