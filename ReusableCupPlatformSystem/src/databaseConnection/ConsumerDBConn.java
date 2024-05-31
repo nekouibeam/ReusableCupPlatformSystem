@@ -51,10 +51,20 @@ public class ConsumerDBConn extends SignupAndLoginExceptions implements DBconnec
      * @throws SQLException if a database access error occurs.
      * @throws IdAlreadyUsedException if the ID is already used.
      * @throws PasswordAlreadyUsedException if the password is already used.
+     * @throws IdCantEmptyException if the ID is empty.
+     * @throws PasswordCantEmptyException if the password is empty.
+     * @throws NameCantEmptyException if the password is empty.
      */
     public void consumerSignUp(String ID, String name, String password)
-            throws SQLException, IdAlreadyUsedException, PasswordAlreadyUsedException {
-        singUpIDCheck(ID);
+            throws SQLException, IdAlreadyUsedException, PasswordAlreadyUsedException,  IdCantEmptyException, PasswordCantEmptyException, NameCantEmptyException{
+    	if (ID == null || ID.trim().isEmpty()) {
+            throw new IdCantEmptyException();
+        } else if (password == null || password.trim().isEmpty()) {
+            throw new PasswordCantEmptyException();
+        } else if(name == null || name.trim().isEmpty()) {
+        	throw new NameCantEmptyException();
+        }
+    	singUpIDCheck(ID);
         newPasswordCheck(password);
         query = String.format("INSERT INTO `Consumer_Accounts` (ID, Name, Password) VALUES ('%s', '%s', '%s');", ID,
                 name, password);
@@ -69,9 +79,16 @@ public class ConsumerDBConn extends SignupAndLoginExceptions implements DBconnec
      * @throws SQLException if a database access error occurs.
      * @throws PasswordWrongException if the password is incorrect.
      * @throws AccountNotExistException if the account does not exist.
+     * @throws IdCantEmptyException if the ID is empty.
+     * @throws PasswordCantEmptyException if the password is empty.
      */
-    public void login(String ID, String password) throws SQLException, PasswordWrongException, AccountNotExistException {
-        accountExistCheck(ID);
+    public void login(String ID, String password) throws SQLException, PasswordWrongException, AccountNotExistException, IdCantEmptyException, PasswordCantEmptyException {
+    	  if (ID == null || ID.trim().isEmpty()) {
+              throw new IdCantEmptyException();
+          } else if (password == null || password.trim().isEmpty()) {
+              throw new PasswordCantEmptyException();
+          }
+    	accountExistCheck(ID);
         query = String.format(
                 "SELECT `ID`, `Password` FROM `Consumer_Accounts` WHERE `ID` = '%s' AND `Password` = '%s';", ID,
                 password);
@@ -96,16 +113,16 @@ public class ConsumerDBConn extends SignupAndLoginExceptions implements DBconnec
         ResultSetMetaData metadata = rs.getMetaData();
         int columnCount = metadata.getColumnCount();
         for (int i = 1; i <= columnCount; i++) {
-            list += String.format("%-10s", metadata.getColumnName(i));
+            list += String.format("%-20s", metadata.getColumnName(i));
         }
         while (rs.next()) {
             list += String.format("\n%s\n", "-".repeat(70));
             String row = "";
             for (int i = 1; i <= columnCount; i++) {
                 if (i == 1) {
-                    row += String.format("%-10d", rs.getInt(i));
+                    row += String.format("%-20d", rs.getInt(i));
                 } else {
-                    row += String.format("%-10s", rs.getString(i));
+                    row += String.format("%-20s", rs.getString(i));
                 }
             }
             list += row;
@@ -123,7 +140,7 @@ public class ConsumerDBConn extends SignupAndLoginExceptions implements DBconnec
      */
     public void changePassword(String ID, String newPassword) throws SQLException, PasswordAlreadyUsedException {
         this.newPasswordCheck(newPassword);
-        query = String.format("UPDATE `Consumer_Accounts` SET `Password` = '%s' WHERE ID = %s;", newPassword, ID);
+        query = String.format("UPDATE `Consumer_Accounts` SET `Password` = '%s' WHERE ID = '%s';", newPassword, ID);
         stat.execute(query);
     }
 
@@ -135,7 +152,7 @@ public class ConsumerDBConn extends SignupAndLoginExceptions implements DBconnec
      * @throws SQLException if a database access error occurs.
      */
     public void changeName(String ID, String newName) throws SQLException {
-        query = String.format("UPDATE `Consumer_Accounts` SET `Name` = '%s' WHERE ID = %s;", newName, ID);
+        query = String.format("UPDATE `Consumer_Accounts` SET `Name` = '%s' WHERE ID = '%s';", newName, ID);
         stat.execute(query);
     }
 
@@ -191,5 +208,29 @@ public class ConsumerDBConn extends SignupAndLoginExceptions implements DBconnec
         if (!rs.next()) {
             throw new AccountNotExistException();
         }
+    }
+    
+    /**
+     * Retrieves the Username associated with the specified user ID from the database.
+     *
+     * @param ID the user ID for which the Username is to be retrieved
+     * @return the Username associated with the specified user ID
+     * @throws SQLException if a database access error occurs or this method is called on a closed result set
+     */
+    public String getUserName(String ID) throws SQLException {
+        query = String.format("SELECT `Name` FROM `Consumer_Accounts` WHERE `ID` = '%s';", ID);
+        rs = stat.executeQuery(query);
+        rs.next();
+        String name = rs.getString("Name");
+        return name;
+    }
+
+    /**
+     * Returns the ID for this connection.
+     *
+     * @return the ID.
+     */
+    public String getID() {
+        return comsumerID;
     }
 }

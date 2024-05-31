@@ -100,4 +100,16 @@ public class SignupAndLoginExceptions {
             super("PasswardCantEmptyException");
         }
     }
+    
+    /**
+     * Exception thrown when the Name is empty.
+     */
+    public class NameCantEmptyException extends Exception {
+        /**
+         * Constructs a new NameCantEmptyException with a default message.
+         */
+        public NameCantEmptyException() {
+            super("NameCantEmptyException");
+        }
+    }
 }

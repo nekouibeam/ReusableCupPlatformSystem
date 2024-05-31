@@ -5,6 +5,14 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;
 import databaseConnection.ConsumerDBConn;
+import databaseConnection.ShopDBConn;
+import databaseConnection.SignupAndLoginExceptions.AccountNotExistException;
+import databaseConnection.SignupAndLoginExceptions.IdCantEmptyException;
+import databaseConnection.SignupAndLoginExceptions.NotActivateException;
+import databaseConnection.SignupAndLoginExceptions.PasswordAlreadyUsedException;
+import databaseConnection.SignupAndLoginExceptions.PasswordCantEmptyException;
+import databaseConnection.SignupAndLoginExceptions.PasswordWrongException;
+import shopProgram.ShopOperationsFrame;
 
 /**
  * ConsumerOperationsFrame class represents the GUI frame for consumer operations.
@@ -24,13 +32,19 @@ public class ConsumerOperationsFrame extends JFrame {
         this.dbcConn = dbcConn;
 
         // Create GUI components
-        outputArea = new JTextArea(10, 30);
+        outputArea = new JTextArea(10, 60);
         outputArea.setEditable(false);
         JButton queryCupsButton = new JButton("Query Cups");
+        JButton logoutButton = new JButton("Logout");
+        JButton changePasswordButton = new JButton("Change Password");
+        JButton changeNameButton = new JButton("Change Name");
 
         // Set up the layout
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(queryCupsButton);
+        buttonPanel.add(changePasswordButton);
+        buttonPanel.add(changeNameButton);
+        buttonPanel.add(logoutButton);
 
         JPanel outputPanel = new JPanel();
         outputPanel.add(new JScrollPane(outputArea));
@@ -45,6 +59,78 @@ public class ConsumerOperationsFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 handleQueryCups();
+            }
+        });
+        
+        logoutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	 int response = JOptionPane.showConfirmDialog(null, "Are you sure you want to logout?", "Confirm Logout", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                 if (response == JOptionPane.YES_OPTION) {
+                     openConsumerFrame(dbcConn);
+                 }
+            }
+        });
+        
+        changePasswordButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+            	String userID = dbcConn.getID();
+
+				String oldPassword = JOptionPane.showInputDialog(null, "Enter Old Password:");
+				if (oldPassword == null) {
+				    return;
+				} else {
+				    try {
+				    	dbcConn.login(userID, oldPassword);
+				    } catch (PasswordWrongException e) {
+				        JOptionPane.showMessageDialog(null, "Old Password is incorrect", "Error", JOptionPane.ERROR_MESSAGE);
+				        return;
+				    } catch (SQLException | AccountNotExistException | IdCantEmptyException e) {
+				        JOptionPane.showMessageDialog(null, "Error during password verification: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				        return;
+				    } catch (PasswordCantEmptyException e) {
+				        JOptionPane.showMessageDialog(null, "Old Password cannot be empty", "Error", JOptionPane.ERROR_MESSAGE);
+				        return;
+				    }
+				}
+
+				String newPassword = JOptionPane.showInputDialog(null, "Enter New Password:");
+				if (newPassword == null) {
+				    return;
+				} else if (newPassword.isEmpty()) {
+				    JOptionPane.showMessageDialog(null, "New Password cannot be empty", "Error", JOptionPane.ERROR_MESSAGE);
+				} else {
+				    try {
+				    	dbcConn.changePassword(userID, newPassword);
+				        JOptionPane.showMessageDialog(null, "Password changed successfully");
+				    } catch (SQLException e) {
+				        JOptionPane.showMessageDialog(null, "SQL Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				    } catch (PasswordAlreadyUsedException e) {
+				        JOptionPane.showMessageDialog(null, "Password already used", "Error", JOptionPane.ERROR_MESSAGE);
+				    }
+				}
+            }
+        });
+        
+        changeNameButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+            	String userID = dbcConn.getID();
+
+				String newName = JOptionPane.showInputDialog(null, "Enter new name:");
+				if(newName == null) {
+					return;
+				}else if(newName.isEmpty()) {
+					JOptionPane.showMessageDialog(null, "New name cannot be empty", "Error", JOptionPane.ERROR_MESSAGE);
+				}else {
+					try {
+						dbcConn.changeName(userID, newName);
+						JOptionPane.showMessageDialog(null, "Name changed successfully");
+					}catch(SQLException e) {
+						JOptionPane.showMessageDialog(null, "SQL Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+					}
+				}
             }
         });
 
@@ -75,5 +161,17 @@ public class ConsumerOperationsFrame extends JFrame {
      */
     private void showError(String title, String message) {
         JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
+    }
+    
+    /**
+     * Opens the openConsumerFrame and closes the current frame.
+     *
+     * @param dbcConn the database connection for the ConsumerFrame.
+     */
+    public void openConsumerFrame(ConsumerDBConn dbcConn) {
+        ConsumerFrame consumerFrame = new ConsumerFrame(dbcConn);
+        consumerFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        consumerFrame.setVisible(true);
+        this.dispose();
     }
 }

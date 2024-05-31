@@ -1,5 +1,7 @@
 package consumerProgram;
 
+import java.sql.SQLException;
+
 import javax.swing.*;
 
 /**
@@ -12,23 +14,26 @@ public class ConsumerMain {
      * Constructs a ConsumerMain object, initializing and displaying the ConsumerFrame.
      */
     public ConsumerMain() {
-        ConsumerFrame cframe = new ConsumerFrame();
-        cframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        cframe.setVisible(true);
+        ConsumerFrame cframe;
+		try {
+			cframe = new ConsumerFrame(new databaseConnection.ConsumerDBConn());
+			cframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	        cframe.setVisible(true);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			 JOptionPane.showMessageDialog(null, "Database Connection Error: " + e.getMessage(), "Error",
+	                    JOptionPane.ERROR_MESSAGE);
+		}
+        
     }
 
     /**
-     * The main method, serving as the entry point for the application.
+     * The main method to run the ConsumerMain class.
      *
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        // Ensure the GUI is created on the Event Dispatch Thread
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new ConsumerMain();
-            }
-        });
+        new ConsumerMain();
     }
 }

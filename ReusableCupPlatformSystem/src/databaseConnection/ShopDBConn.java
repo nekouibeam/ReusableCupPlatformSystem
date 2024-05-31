@@ -157,7 +157,7 @@ public class ShopDBConn extends DatabaseUpdate {
         ResultSetMetaData metadata = rs.getMetaData();
         int columnCount = metadata.getColumnCount();
         for (int i = 1; i <= columnCount; i++) {
-            list += String.format("%-10s", metadata.getColumnName(i));
+            list += String.format("%-20s", metadata.getColumnName(i));
         }
         while (rs.next()) {
             list += String.format("\n%s\n", "-".repeat(70));

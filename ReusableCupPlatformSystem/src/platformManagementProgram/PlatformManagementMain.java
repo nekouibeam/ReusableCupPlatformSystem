@@ -15,4 +15,13 @@ public class PlatformManagementMain {
         pframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pframe.setVisible(true);
     }
+    
+    /**
+     * The main method to run the PlatformManagementMain class.
+     *
+     * @param args command line arguments
+     */
+    public static void main(String[] args) {
+        new PlatformManagementMain();
+    }
 }
