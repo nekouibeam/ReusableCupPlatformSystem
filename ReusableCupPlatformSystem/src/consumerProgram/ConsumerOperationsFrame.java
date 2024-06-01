@@ -5,14 +5,11 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;
 import databaseConnection.ConsumerDBConn;
-import databaseConnection.ShopDBConn;
 import databaseConnection.SignupAndLoginExceptions.AccountNotExistException;
 import databaseConnection.SignupAndLoginExceptions.IdCantEmptyException;
-import databaseConnection.SignupAndLoginExceptions.NotActivateException;
 import databaseConnection.SignupAndLoginExceptions.PasswordAlreadyUsedException;
 import databaseConnection.SignupAndLoginExceptions.PasswordCantEmptyException;
 import databaseConnection.SignupAndLoginExceptions.PasswordWrongException;
-import shopProgram.ShopOperationsFrame;
 
 /**
  * ConsumerOperationsFrame class represents the GUI frame for consumer operations.

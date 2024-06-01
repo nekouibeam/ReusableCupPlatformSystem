@@ -1,7 +1,6 @@
 package consumerProgram;
 
 import java.sql.SQLException;
-
 import javax.swing.*;
 
 /**

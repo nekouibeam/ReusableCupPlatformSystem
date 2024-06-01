@@ -123,7 +123,7 @@ public class ConsumerFrame extends JFrame {
         } catch (PasswordCantEmptyException e) {
             showError("Login Error", "Password can't be empty");
         } catch (NameCantEmptyException e) {
-            showError("Login Error", " can't be empty");
+            showError("Login Error", "Name can't be empty");
         }
 	}
 
