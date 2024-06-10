@@ -63,7 +63,7 @@ public class ShopFrame extends JFrame {
      */
     public void createButton() {
         submitButton = new JButton("Submit");
-        checkHeldCupButton = new JButton("Cup Currently Held");
+        checkHeldCupButton = new JButton("CupsHolding");
         changePasswordButton = new JButton("Change Password");
         logoutButton = new JButton("Logout");
 

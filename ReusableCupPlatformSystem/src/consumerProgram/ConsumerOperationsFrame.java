@@ -31,7 +31,7 @@ public class ConsumerOperationsFrame extends JFrame {
         // Create GUI components
         outputArea = new JTextArea(10, 60);
         outputArea.setEditable(false);
-        JButton queryCupsButton = new JButton("Query Cups");
+        JButton queryCupsButton = new JButton("CupsHolding");
         JButton logoutButton = new JButton("Logout");
         JButton changePasswordButton = new JButton("Change Password");
         JButton changeNameButton = new JButton("Change Name");

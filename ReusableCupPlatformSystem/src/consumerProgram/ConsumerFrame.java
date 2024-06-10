@@ -85,7 +85,7 @@ public class ConsumerFrame extends JFrame {
 
 		try {
 			dbcConn.login(id, password);
-			showMessage("Success", String.format("SignUp successful, %s.", dbcConn.getUserName(id)));
+			showMessage("Success", String.format("Login successful, %s.", dbcConn.getUserName(id)));
 			openConsumerOperationsFrame();
 		} catch (PasswordWrongException e) {
 			showError("Login Error", "Wrong password");
@@ -119,11 +119,11 @@ public class ConsumerFrame extends JFrame {
 		} catch (SQLException e) {
 			showError("Sign Up Error", e.getMessage());
 		} catch (IdCantEmptyException e) {
-            showError("Login Error", "ID can't be empty");
+            showError("Sign Up Error", "ID can't be empty");
         } catch (PasswordCantEmptyException e) {
-            showError("Login Error", "Password can't be empty");
+            showError("Sign Up Error", "Password can't be empty");
         } catch (NameCantEmptyException e) {
-            showError("Login Error", "Name can't be empty");
+            showError("Sign Up Error", "Name can't be empty");
         }
 	}
 

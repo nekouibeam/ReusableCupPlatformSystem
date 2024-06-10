@@ -81,7 +81,7 @@ public class ShopOperationsFrame extends JFrame {
 
         try {
             shopConn.activateAccount(id, activatePassword, password);
-            showMessage("Success", "Sign Up Successful");
+            showMessage("Success", "Active Successful");
         } catch (AccountNotExistException e) {
             showError("Activate Error", "Account does not exist");
         } catch (PasswordAlreadyUsedException e) {

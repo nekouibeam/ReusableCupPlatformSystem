@@ -113,16 +113,16 @@ public class ConsumerDBConn extends SignupAndLoginExceptions implements DBconnec
         ResultSetMetaData metadata = rs.getMetaData();
         int columnCount = metadata.getColumnCount();
         for (int i = 1; i <= columnCount; i++) {
-            list += String.format("%-20s", metadata.getColumnName(i));
+            list += String.format("%s\t", metadata.getColumnName(i));
         }
         while (rs.next()) {
-            list += String.format("\n%s\n", "-".repeat(70));
+            list += String.format("\n%s\n", "-".repeat(140));
             String row = "";
             for (int i = 1; i <= columnCount; i++) {
                 if (i == 1) {
-                    row += String.format("%-20d", rs.getInt(i));
+                    row += String.format("%d\t", rs.getInt(i));
                 } else {
-                    row += String.format("%-20s", rs.getString(i));
+                    row += String.format("%s\t", rs.getString(i));
                 }
             }
             list += row;

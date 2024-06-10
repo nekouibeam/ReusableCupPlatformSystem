@@ -120,23 +120,41 @@ public class PlatformManagementFrame extends JFrame {
                 }
             }
         });
-
+        
         addCupButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String type = JOptionPane.showInputDialog("Please enter cup type:");
-                if (type == null ) {
-                    return;
-                }else if(type.trim().isEmpty()) {
-                	JOptionPane.showMessageDialog(null, "Input cannot be empty", "Error", JOptionPane.ERROR_MESSAGE);
+            	
+                String[] types = {"hot", "cold"};
+                String[] sizes = {"large", "small"};
+
+                JComboBox<String> typeComboBox = new JComboBox<>(types);
+                int typeOption = JOptionPane.showConfirmDialog(
+                    null,
+                    typeComboBox,
+                    "Please select cup type:",
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.QUESTION_MESSAGE
+                );
+
+                if (typeOption != JOptionPane.OK_OPTION) {
                     return;
                 }
-                String size = JOptionPane.showInputDialog("Please enter cup size:");
-                if (size == null ) {
-                    return;
-                }else if(size.trim().isEmpty()) {
-                	JOptionPane.showMessageDialog(null, "Input cannot be empty", "Error", JOptionPane.ERROR_MESSAGE);
+                String type = (String) typeComboBox.getSelectedItem();
+
+                JComboBox<String> sizeComboBox = new JComboBox<>(sizes);
+                int sizeOption = JOptionPane.showConfirmDialog(
+                    null,
+                    sizeComboBox,
+                    "Please select cup size:",
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.QUESTION_MESSAGE
+                );
+
+                if (sizeOption != JOptionPane.OK_OPTION) {
                     return;
                 }
+                String size = (String) sizeComboBox.getSelectedItem();
+
                 try {
                     dbcConn.addCup(type, size);
                     JOptionPane.showMessageDialog(null, "Cup added successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
