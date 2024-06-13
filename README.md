@@ -1,3 +1,4 @@
 # ReusableCupPlatformSystem
 Java檔都在"ReusableCupPlatformSystem"資料夾裡面；
-Javadoc為html檔，打開任一個html檔皆可
+Javadoc為html檔，打開任一個html檔皆可；
+系統操作方法請見說明書
